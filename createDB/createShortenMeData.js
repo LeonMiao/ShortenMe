@@ -6,6 +6,11 @@ accountsCollection.insert(
 {
 	accountId: 1,
     userName: "firstTestUser",
+		fName: "Herbert",
+    mName: "A.",
+    lName: "Cazarez",
+    emailAddr: "hac@msn.com",
+    phoneNum: "800-100-2001",
     userType: "Basic",
     createDate: "5-1-2017"
 }
@@ -15,7 +20,12 @@ accountsCollection.insert(
 {
 	accountId: 2,
     userName: "secondTestUser",
-    userType: "Basic",
+		fName: "Robin",
+    mName: "S.",
+    lName: "Redwine",
+    emailAddr: "rsr@hotmail.com",
+    phoneNum: "600-200-5002",
+    userType: "Pro",
     createDate: "5-2-2017"
 }
 )
@@ -24,7 +34,12 @@ accountsCollection.insert(
 {
 	accountId: 3,
     userName: "thirdTestUser",
-    userType: "Pro",
+		fName: "James",
+    mName: "L.",
+    lName: "Nichols",
+    emailAddr: "rsr@hotmail.com",
+    phoneNum: "520-030-7003",
+    userType: "Basic",
     createDate: "5-3-2017"
 }
 )

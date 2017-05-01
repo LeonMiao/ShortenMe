@@ -55,6 +55,11 @@ function populateAccountsView(elementId, accounts) {
 
 		// newElement += "<h4 class=\"panel-heading\">Hello, " + accounts[i].userName + "</h4>";
 		newElement += "<div class=\"panel-body\">";
+		newElement += "<p> First Name: " + accounts[i].fName  + "</p>";
+		newElement += "<p> Middle Name: " + accounts[i].mName  + "</p>";
+		newElement += "<p> Last Name: " + accounts[i].lName  + "</p>";
+		newElement += "<p> Email Address: " + accounts[i].emailAddr  + "</p>";
+		newElement += "<p> Phone Number: " + accounts[i].phoneNum  + "</p>";
 		newElement += "<p> Account Type: " + accounts[i].userType  + "</p>";
 		newElement += "</div>";
 		newElement += "<table class=\"table\" style=\"font-size:10pt;\">";

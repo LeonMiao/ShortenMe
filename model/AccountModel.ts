@@ -19,6 +19,11 @@ export default class AccountModel {
             {
                 accountId: Number,
                 userName: String,
+                fName: String,
+                mName: String,
+                lName: String,
+                emailAddr: String,
+                phoneNum: String,
                 userType: String,
                 createDate: String
             }, {collection: 'accounts'}
