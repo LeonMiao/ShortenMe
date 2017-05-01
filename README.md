@@ -19,7 +19,7 @@ To execute the server db and then the node server with the following commands:
 
 //populate the DB server with sample data
 2. mongo --port 3000 -u dbAdmin -p test --authenticationDatabase admin
->load ('createToDoSampleData.js');
+>load ('createShortenMeData.js');
 >exit
 
 //Starts Node/Express server on port 8080
