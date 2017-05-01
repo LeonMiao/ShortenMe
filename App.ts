@@ -76,7 +76,7 @@ class App {
     this.express.use('/', router);
 
     // this.express.use('/app/json/', express.static(__dirname+'/app/json'));
-    // this.express.use('/images', express.static(__dirname+'/img'));
+    this.express.use('/image', express.static(__dirname+'/assets/images'));
     this.express.use('/', express.static(__dirname+'/pages'));
 
   }
