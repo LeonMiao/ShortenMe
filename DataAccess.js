@@ -17,6 +17,6 @@ var DataAccess = (function () {
     };
     return DataAccess;
 }());
-DataAccess.DB_CONNECTION_STRING = 'mongodb://dbAdmin:test@localhost:3000/shortenMe/?authSource=admin';
+DataAccess.DB_CONNECTION_STRING = 'mongodb://admin:admin@localhost:27017/URLdb'
 DataAccess.connect();
 exports["default"] = DataAccess;
