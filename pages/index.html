@@ -1,0 +1,125 @@
+<html>
+
+<head>
+
+	<meta charset="UTF-8">
+	<title>ShortenMe</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+</head>
+</head>
+
+<body onload="initXHR('convert', null)">
+	<div class="container">
+
+		<!-- Static navbar -->
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="javascript:initXHR('convert', null)">ShortenMe</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="javascript:initXHR('convert', null)">Convert</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Account<span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="javascript:initXHR('accountList', null)">Profile</a></li>
+								<li><a href="javascript:initXHR('urlList', null)">URLs</a></li>
+								<!--<li><a href="#">Disabled</a></li>-->
+							</ul>
+						</li>
+						<!--<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Shared<span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">
+					  <li><a href="#">Active</a></li>
+					  <li><a href="#">Pending</a></li>
+					</ul>
+				  </li>-->
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#">Login</a></li>
+					</ul>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+			<!--/.container-fluid -->
+		</nav>
+
+		<div id="convert">
+			<!-- Main component for a primary marketing message or call to action -->
+			<!--<div class="jumbotron">
+				<h1>To Do List</h1>
+				<p>Keep track of all of things you need to do by creating lists and sharing items with friends.</p>
+				<p>
+					<a class="btn btn-lg btn-primary" href="javascript:initXHR('lists', null)" role="button">View</a>
+				</p>
+			</div>-->
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<h4>Input your long URL</h4>
+
+					<form ng-submit="submit()">
+						<div class="form-group">
+							<input class="form-control" type="text" ng-model="longUrl" />
+						</div>
+						<input class="btn btn-primary" type="submit" value="Get Your Short URL" />
+					</form>
+
+				</div>
+			</div>
+		</div>
+
+		<div id="accountList" style="display:none;">
+		</div>
+
+		<div id="urlList" style="display:none;">
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading">
+					<h3>URLs</h3>
+					<!--<div>
+						<a href="#"><span class="glyphicon glyphicon-edit"></span></a>
+						<a href="#"><span class="glyphicon glyphicon-trash"></span></a>
+						<a href="#"><span class="glyphicon glyphicon-ok"></span></a>
+					</div>-->
+				</div>
+				<!-- Table -->
+				<table class="table" style="font-size:10pt;">
+					<thead>
+						<tr>
+							<th>Short URL</th>
+							<th>Long URL</th>
+							<th>Expiration Date</th>
+							<!--<th width="5%">Remove</th>
+							<th width="5%">Stats</th>-->
+							<!--<th width="5%"> <a href="#"><span class="glyphicon glyphicon-trash"></span></a></th>
+							<th width="5%"> <a href="#"><span class="glyphicon glyphicon-list-alt"></span></a></th>-->
+						</tr>
+					</thead>
+					<tbody id='urls'>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+	<!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script src="/script.js"></script>
+
+	<!-- Leon: use ng 1.X for demo 4/29/17, may use 2.X later-->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-resource.min.js"></script>
+</body>
+
+</html>
