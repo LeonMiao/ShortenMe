@@ -2,26 +2,63 @@ function initXHR(x, value) {
 	console.log(x); 
 	if (x == 'convert') {
 		document.getElementById("convert").style.display = "block";
+		document.getElementById("shortUrl").style.display = "none";
 		document.getElementById("accountList").style.display = "none";
 		document.getElementById("urlList").style.display = "none";
+		document.getElementById("login").style.display = "none";
+		document.getElementById("createAccount").style.display = "none";
+	}
+	else if (x == 'shortUrl') {
+		generateShortUrl(value);
+		document.getElementById("convert").style.display = "none";
+		document.getElementById("shortUrl").style.display = "block";
+		document.getElementById("accountList").style.display = "none";
+		document.getElementById("urlList").style.display = "none";
+		document.getElementById("login").style.display = "none";
+		document.getElementById("createAccount").style.display = "none";
 	}
 	else if (x == 'accountList') {
 		//		retrieveActiveListsFromServer('/app/json/lists.json');
 		retrieveActiveAccountsFromServer('/app/account/', 'accountList');
 		document.getElementById("convert").style.display = "none";
+		document.getElementById("shortUrl").style.display = "none";
 		document.getElementById("accountList").style.display = "block";
-		document.getElementById("urlList").style.display = "none";		
+		document.getElementById("urlList").style.display = "none";
+		document.getElementById("login").style.display = "none";
+		document.getElementById("createAccount").style.display = "none";
 	}
 	else if (x == 'urlList') {
 		retrieveActiveAccountsFromServer('/app/account/' + value, 'urlList');
 		document.getElementById("convert").style.display = "none";
+		document.getElementById("shortUrl").style.display = "none";
 		document.getElementById("accountList").style.display = "none";
 		document.getElementById("urlList").style.display = "block";
+		document.getElementById("login").style.display = "none";
+		document.getElementById("createAccount").style.display = "none";
+	}
+	else if (x == 'login'){
+		document.getElementById("convert").style.display = "none";
+		document.getElementById("shortUrl").style.display = "none";
+		document.getElementById("accountList").style.display = "none";
+		document.getElementById("urlList").style.display = "none";
+		document.getElementById("login").style.display = "block";
+		document.getElementById("createAccount").style.display = "none";
+	}
+	else if (x == 'createAccount'){
+		document.getElementById("convert").style.display = "none";
+		document.getElementById("shortUrl").style.display = "none";
+		document.getElementById("accountList").style.display = "none";
+		document.getElementById("urlList").style.display = "none";
+		document.getElementById("login").style.display = "none";
+		document.getElementById("createAccount").style.display = "block";
 	}
 	else {
 		document.getElementById("convert").style.display = "block";
+		document.getElementById("shortUrl").style.display = "none";
 		document.getElementById("accountList").style.display = "none";
 		document.getElementById("urlList").style.display = "none";
+		document.getElementById("login").style.display = "none";
+		document.getElementById("createAccount").style.display = "none";
 	}
 }
 
@@ -121,4 +158,21 @@ function populateListItems(elementId, account) {
 		newElement += "</tr>";
 	}
 	$("#" + elementId).append(newElement);
+}
+
+function generateShortUrl(longUrl) {
+	var newElement = "<div class=\"row\" style=\"margin-top: 50px\">"
+  	newElement += "<div class=\"col-md-6 col-md-offset-3\">"
+	newElement += "<p>Old Url: www.longexample.com/asdf/dst67894523456687634/sSERTYRERTYIUYTJYTUYTR</p>"
+    newElement += "<div class=\"input-group\">"
+    newElement += "<input type=\"text\" class=\"form-control\" value=\"www.shortenme.com/rn5f\">"
+	newElement += "<span class=\"input-group-btn\">"
+	newElement += "<button class=\"btn btn-secondary\" type=\"button\">Copy</button>"
+	newElement += "</span"
+	newElement += "</div>"
+    newElement += "<a class=\"btn btn-primary\" href=\"javascript:initXHR('convert', null)\" role=\"button\">Get Another!</a>"
+	newElement += "</div>"
+	newElement += "</div>"
+	var element = document.getElementById('shortUrl');
+	element.innerHTML = newElement;
 }
