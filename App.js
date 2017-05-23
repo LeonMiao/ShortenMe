@@ -29,6 +29,12 @@ var App = (function () {
     App.prototype.routes = function () {
         var _this = this;
         var router = express.Router();
+        // don't forget to add this when using 4200 ng server
+        router.use(function (req, res, next) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        });
         router.get('/app/account/:accountId/count', function (req, res) {
             var id = req.params.accountId;
             console.log('Query single account with id: ' + id);
