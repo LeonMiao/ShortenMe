@@ -19,11 +19,24 @@ To execute the server db and then the node server with the following commands:
 
 //populate the DB server with sample data
 2. mongo --port 3000 -u dbAdmin -p test --authenticationDatabase admin
->load ('createShortenMeData.js');
+>load ('createDB/createShortenMeData.js');
 >exit
 
 //Starts Node/Express server on port 8080
 3. node Server.js 
+
+===============================OR using mLab:=====================================
+
+=>mongodb://<dbuser>:<dbpassword>@ds064799.mlab.com:64799/shortenme_db
+so we use:
+1. mongodb://shortenme_admin:su5240@ds064799.mlab.com:64799/shortenme_db
+>load ('createDB/createShortenMeData.js');
+>exit
+
+//Starts Node/Express server on port 8080
+2. node Server.js 
+
+==================================================================================
 
 To test server #3, try the following URL on the browser, while the server is running:
 * http://localhost:8080/

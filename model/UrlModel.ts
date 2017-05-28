@@ -48,4 +48,26 @@ export default class UrlModel {
         });
     }
 
+    // public AddUrlsToList(response:any, filter:Object, 
+    //                                    urlId_data: Number, 
+    //                                    shortUrl_data: String, 
+    //                                    longUrl_data: String, 
+    //                                    expiration_data: String, 
+    //                                    isRemoved_data: Boolean) {
+
+    public AddUrlsToList(response:any, filter:Object, newUrlObj: Object) {
+        // var new_url_data = {
+        //     urlId: urlId_data,
+        //     shortUrl: shortUrl_data,
+        //     longUrl: longUrl_data,
+        //     expirationDate: expiration_data,
+        //     isRemoved: isRemoved_data
+        // };
+
+        var query = this.model.findOneAndUpdate(filter, {$push: {urls: newUrlObj}});
+        query.exec( (err, itemArray) => {
+            response.json(itemArray);
+        });
+    }
+
 }

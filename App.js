@@ -61,10 +61,38 @@ var App = (function () {
             console.log('Query All account');
             _this.Accounts.retrieveAllAccounts(res);
         });
+        router.post('/app/url', function (req, res) {
+            var longUrl = req.body.longUrl; //-> directly use the req body parsed by jsonParser
+            // urlService.getShortUrl(longUrl, function (url) {
+            //     res.json(url);
+            // });
+            var new_url_data = {
+                urlId: 6,
+                shortUrl: "www.shortenme.com/new_url_for_test",
+                longUrl: longUrl,
+                expirationDate: "5-23-2017",
+                isRemoved: false
+            };
+            _this.Urls.AddUrlsToList(res, { accountId: 1 }, new_url_data);
+            //res.json(new_url_data)
+        });
+        // router.get('/app/url/:shortUrl', (req, res) {
+        //     // use .params in Express
+        //     var shortUrl = req.params.shortUrl;
+        //     urlService.getLongUrl(shortUrl, function (url) {
+        //         res.json(url);   
+        //     });
+        // });
+        // public AddUrlsToList(response:any, filter:Object, 
+        //                                urlId_data: Number, 
+        //                                shortUrl_data: String, 
+        //                                longUrl_data: String, 
+        //                                expiration_data: String, 
+        //                                isRemoved_data: Boolean) 
         this.express.use('/', router);
         // this.express.use('/app/json/', express.static(__dirname+'/app/json'));
         this.express.use('/image', express.static(__dirname + '/assets/images'));
-        this.express.use('/', express.static(__dirname + '/pages'));
+        this.express.use('/', express.static(__dirname + '/dist'));
     };
     return App;
 }());
