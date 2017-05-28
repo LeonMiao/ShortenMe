@@ -1,4 +1,4 @@
-db = db.getSiblingDB('shortenMe')
+db = db.getSiblingDB('shortenme_db')
 db.createCollection('accounts')
 accountsCollection = db.getCollection("accounts")
 accountsCollection.remove({})
