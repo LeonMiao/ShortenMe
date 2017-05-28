@@ -29,7 +29,7 @@ To execute the server db and then the node server with the following commands:
 
 =>mongodb://<dbuser>:<dbpassword>@ds064799.mlab.com:64799/shortenme_db
 so we use:
-1. mongodb://shortenme_admin:su5240@ds064799.mlab.com:64799/shortenme_db
+1. mongo ds064799.mlab.com:64799/shortenme_db -u shortenme_admin -p su5240
 >load ('createDB/createShortenMeData.js');
 >exit
 
