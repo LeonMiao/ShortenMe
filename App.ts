@@ -3,6 +3,7 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as url from 'url';
 import * as bodyParser from 'body-parser';
+import ShortUniqueId from 'short-unique-id';
 
 // import ListModel from './model/ListModel';
 // import TaskModel from './model/TaskModel';
@@ -13,6 +14,8 @@ import UrlModel from './model/UrlModel';
 
 import DataAccess from './DataAccess';
 
+const uid: ShortUniqueId = new ShortUniqueId();
+
 // Creates and configures an ExpressJS web server.
 class App {
 
@@ -20,16 +23,20 @@ class App {
     public express: express.Application;
     public Accounts: AccountModel;
     public Urls: UrlModel;
-    public idGenerator: number;
+    public idGeneratorAccount: number;
+    public idGeneratorUrl: number;
+    //public uid: ShortUniqueId;
 
     //Run configuration methods on the Express instance.
     constructor() {
         this.express = express();
         this.middleware();
         this.routes();
-        this.idGenerator = 100;
+        this.idGeneratorAccount = 1;
+        this.idGeneratorUrl = 1;
         this.Accounts = new AccountModel();
         this.Urls = new UrlModel();
+        //this.uid = new ShortUniqueId();
     }
 
     // Configure Express middleware.
@@ -59,14 +66,14 @@ class App {
         router.post('/app/account/', (req, res) => {
             console.log(req.body);
             var jsonObj = req.body;
-            jsonObj.accountId = this.idGenerator;
+            jsonObj.accountId = this.idGeneratorAccount;
             this.Accounts.model.create([jsonObj], (err) => {
                 if (err) {
                     console.log('object creation failed');
                 }
             });
-            res.send(this.idGenerator.toString());
-            this.idGenerator++;
+            res.send(this.idGeneratorAccount.toString());
+            this.idGeneratorAccount++;
         });
 
         router.get('/app/account/:accountId', (req, res) => {
@@ -80,20 +87,32 @@ class App {
             this.Accounts.retrieveAllAccounts(res);
         });
 
-        router.post('/app/url', (req, res) => { 
-            var longUrl = req.body.longUrl; //-> directly use the req body parsed by jsonParser
-            // urlService.getShortUrl(longUrl, function (url) {
-            //     res.json(url);
-            // });
-            var new_url_data = {
-                urlId: 6,
-                shortUrl: "www.shortenme.com/new_url_for_test",
-                longUrl: longUrl,
-                expirationDate: "5-23-2017",
-                isRemoved: false
-            };
+        router.post('/app/url', (req, res) => {
+            var longUrl = req.body.longUrl;
 
-            this.Urls.AddUrlsToList(res, { accountId: 1 }, new_url_data);
+            if (longUrl.indexOf('http') === -1) {
+                longUrl = "http://" + longUrl;
+            }
+
+            this.Urls.model.findOne({ accountId: 1, 'urls.longUrl': longUrl }, function (err, url) {
+            // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
+                if (url) {
+                    console.log("found longUrl in the model");
+                } else {
+                    var shortUrl = uid.randomUUID(6);
+                    console.log(shortUrl);
+                    var new_url_data = {
+                        urlId: this.idGeneratorUrl,
+                        shortUrl: shortUrl,
+                        longUrl: longUrl,
+                        expirationDate: "6-18-2017",
+                        isRemoved: false
+                    };
+                    this.Urls.AddUrlsToList(res, { accountId: 1 }, new_url_data);
+                    this.idGeneratorUrl++;
+                }
+            });
+
             //res.json(new_url_data)
         });
 
@@ -119,7 +138,7 @@ class App {
         // this.express.use('/app/json/', express.static(__dirname+'/app/json'));
         this.express.use('/image', express.static(__dirname + '/assets/images'));
         this.express.use('/', express.static(__dirname + '/dist'));
-        
+
 
     }
 

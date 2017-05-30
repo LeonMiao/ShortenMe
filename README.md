@@ -26,9 +26,7 @@ To execute the server db and then the node server with the following commands:
 3. node Server.js 
 
 ===============================OR using mLab:=====================================
-
-=>mongodb://<dbuser>:<dbpassword>@ds064799.mlab.com:64799/shortenme_db
-so we use:
+run 1 ONLY for the very first time. For team ShortenMe, please SKIP this!!!
 1. mongo ds064799.mlab.com:64799/shortenme_db -u shortenme_admin -p su5240
 >load ('createDB/createShortenMeData.js');
 >exit

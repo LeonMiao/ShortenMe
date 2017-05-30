@@ -12,6 +12,7 @@
     "morgan": "^1.8.1",
     "path": "^0.12.7",
     "q": "^1.5.0",
+    "short-unique-id": "^1.1.0",
     "typescript": "^2.2.2"
   },
   "devDependencies": {},

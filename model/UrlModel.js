@@ -52,7 +52,11 @@ var UrlModel = (function () {
         // };
         var query = this.model.findOneAndUpdate(filter, { $push: { urls: newUrlObj } });
         query.exec(function (err, itemArray) {
-            response.json(itemArray);
+            //var urlArrayLen = itemArray.urls.length;
+            //console.log("urlarraylen: "+ urlArrayLen);
+            //response.json(itemArray.urls[urlArrayLen-1]);
+            //response.json(itemArray);
+            response.json(newUrlObj);
         });
     };
     return UrlModel;
