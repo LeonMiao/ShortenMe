@@ -71,12 +71,17 @@ var App = (function () {
             if (longUrl.indexOf('http') === -1) {
                 longUrl = "http://" + longUrl;
             }
-            _this.Urls.model.findOne({ accountId: 1, 'urls.longUrl': longUrl }, function (err, url) {
+            _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'longUrl': longUrl } } }, function (err, url) {
                 // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
-                if (url) {
-                    console.log(longUrl);
+                if (url.urls[0]) {
+                    console.log("found longUrl in the model");
+                    // will return a url model with one match url item in an array
+                    // so we need to in fact return url.urls[0]
+                    console.log(url.urls[0]);
+                    res.json(url.urls[0]);
                 }
                 else {
+                    console.log("Not found longUrl in the model");
                     var shortUrl = uid.randomUUID(6);
                     console.log(shortUrl);
                     var new_url_data = {
@@ -92,6 +97,17 @@ var App = (function () {
             });
             //res.json(new_url_data)
         });
+        // router.get('/urls/:shortUrl', function (req, res) {
+        //     // use .params in Express
+        //     var shortUrl = req.params.shortUrl;
+        //     urlService.getLongUrl(shortUrl, function (url) {
+        //         if (url) {
+        //             res.json(url);
+        //         } else {
+        //             res.status(404).send('what???');
+        //         }
+        //     });
+        // });
         // router.get('/app/url/:shortUrl', (req, res) {
         //     // use .params in Express
         //     var shortUrl = req.params.shortUrl;
