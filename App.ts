@@ -124,31 +124,28 @@ class App {
             //res.json(new_url_data)
         });
 
-        // router.get('/urls/:shortUrl', function (req, res) {
-        //     // use .params in Express
-        //     var shortUrl = req.params.shortUrl;
+        router.get('/app/url/:shortUrl', function (req, res) {
+            // use .params in Express
+            var shortUrl = req.params.shortUrl;
 
+            this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': shortUrl } } }, function (err, url) {
+                // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
+                if (url.urls[0]) {
+                    console.log("found shortUrl in the model");
+                    // will return a url model with one match url item in an array
+                    // so we need to in fact return url.urls[0]
+                    console.log(url.urls[0]);
 
+                    res.json(url.urls[0]);
 
+                } else {
+                    console.log("not found shortUrl in the model");
 
-        //     urlService.getLongUrl(shortUrl, function (url) {
-        //         if (url) {
-        //             res.json(url);
-        //         } else {
-        //             res.status(404).send('what???');
-        //         }
-        //     });
-        // });
+                    res.status(404).send('what??? shortUrl not found.');
+                }
+            });
 
-        // router.get('/app/url/:shortUrl', (req, res) {
-        //     // use .params in Express
-        //     var shortUrl = req.params.shortUrl;
-        //     urlService.getLongUrl(shortUrl, function (url) {
-        //         res.json(url);   
-        //     });
-        // });
-
-
+        });
 
         // public AddUrlsToList(response:any, filter:Object, 
         //                                urlId_data: Number, 
