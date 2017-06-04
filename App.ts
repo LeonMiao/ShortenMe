@@ -5,8 +5,6 @@ import * as url from 'url';
 import * as bodyParser from 'body-parser';
 import ShortUniqueId from 'short-unique-id';
 import emoji from 'emojilib';
-// import ListModel from './model/ListModel';
-// import TaskModel from './model/TaskModel';
 
 // models for account and url
 import AccountModel from './model/AccountModel';
@@ -28,7 +26,6 @@ class App {
     public Urls: UrlModel;
     public idGeneratorAccount: number;
     public idGeneratorUrl: number;
-    //public uid: ShortUniqueId;
 
     //Run configuration methods on the Express instance.
     constructor() {
@@ -39,7 +36,6 @@ class App {
         this.idGeneratorUrl = 1;
         this.Accounts = new AccountModel();
         this.Urls = new UrlModel();
-        //this.uid = new ShortUniqueId();
     }
 
     // Configure Express middleware.
@@ -98,7 +94,6 @@ class App {
             }
 
             this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'longUrl': longUrl } } }, function (err, url) {
-                // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                 if (url.urls[0]) {
                     console.log("found longUrl in the model");
                     // will return a url model with one match url item in an array
@@ -106,7 +101,6 @@ class App {
                     console.log(url.urls[0]);
 
                     res.json(url.urls[0]);
-
                 } else {
                     console.log("Not found longUrl in the model");
 
@@ -151,18 +145,15 @@ class App {
             var shortUrl = req.params.shortUrl;
 
             this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': shortUrl } } }, function (err, url) {
-                // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                 if (url.urls[0]) {
                     console.log("found shortUrl in the model");
                     // will return a url model with one match url item in an array
                     // so we need to in fact return url.urls[0]
                     console.log(url.urls[0]);
-
                     res.json(url.urls[0]);
 
                 } else {
                     console.log("not found shortUrl in the model");
-
                     res.status(404).send('what??? shortUrl not found.');
                 }
             });
@@ -184,10 +175,7 @@ class App {
                         // will return a url model with one match url item in an array
                         // so we need to in fact return url.urls[0]
                         console.log(url.urls[0]);
-                        //res.json(url.urls[0]);
                         res.redirect(url.urls[0].longUrl);
-                        // record the stats
-                        //statsService.logRequest(shortUrl, req);
 
                     } else {
                         console.log("shortUrl routing: not found shortUrl in the model");
@@ -203,11 +191,8 @@ class App {
                         // will return a url model with one match url item in an array
                         // so we need to in fact return url.urls[0]
                         console.log(url.urls[0]);
-                        //res.json(url.urls[0]);
                         res.redirect(url.urls[0].longUrl);
-                        // record the stats
-                        //statsService.logRequest(shortUrl, req);
-
+                       
                     } else {
                         console.log("emojiLink routing: not found emojiLink in the model");
                         res.status(404).send('what??? emojiLink not found.');
@@ -215,7 +200,6 @@ class App {
                     }
                 });
             }
-
         });
 
         // public AddUrlsToList(response:any, filter:Object, 
@@ -230,10 +214,7 @@ class App {
         // this.express.use('/app/json/', express.static(__dirname+'/app/json'));
         this.express.use('/image', express.static(__dirname + '/assets/images'));
         this.express.use('/', express.static(__dirname + '/dist'));
-
-
     }
-
 }
 
 export default new App().express;

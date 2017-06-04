@@ -5,8 +5,6 @@ var logger = require("morgan");
 var bodyParser = require("body-parser");
 var short_unique_id_1 = require("short-unique-id");
 var emojilib_1 = require("emojilib");
-// import ListModel from './model/ListModel';
-// import TaskModel from './model/TaskModel';
 // models for account and url
 var AccountModel_1 = require("./model/AccountModel");
 var UrlModel_1 = require("./model/UrlModel");
@@ -14,7 +12,6 @@ var UrlModel_1 = require("./model/UrlModel");
 var uid = new short_unique_id_1();
 // Creates and configures an ExpressJS web server.
 var App = (function () {
-    //public uid: ShortUniqueId;
     //Run configuration methods on the Express instance.
     function App() {
         this.express = express();
@@ -24,7 +21,6 @@ var App = (function () {
         this.idGeneratorUrl = 1;
         this.Accounts = new AccountModel_1["default"]();
         this.Urls = new UrlModel_1["default"]();
-        //this.uid = new ShortUniqueId();
     }
     // Configure Express middleware.
     App.prototype.middleware = function () {
@@ -74,7 +70,6 @@ var App = (function () {
                 longUrl = "http://" + longUrl;
             }
             _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'longUrl': longUrl } } }, function (err, url) {
-                // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                 if (url.urls[0]) {
                     console.log("found longUrl in the model");
                     // will return a url model with one match url item in an array
@@ -117,7 +112,6 @@ var App = (function () {
             // use .params in Express
             var shortUrl = req.params.shortUrl;
             _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': shortUrl } } }, function (err, url) {
-                // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                 if (url.urls[0]) {
                     console.log("found shortUrl in the model");
                     // will return a url model with one match url item in an array
@@ -138,16 +132,12 @@ var App = (function () {
             redirectUrl = decodeURI(redirectUrl);
             if (redirectUrl.length == 6) {
                 _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': redirectUrl } } }, function (err, url) {
-                    // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
                         console.log("shortUrl routing: found shortUrl in the model");
                         // will return a url model with one match url item in an array
                         // so we need to in fact return url.urls[0]
                         console.log(url.urls[0]);
-                        //res.json(url.urls[0]);
                         res.redirect(url.urls[0].longUrl);
-                        // record the stats
-                        //statsService.logRequest(shortUrl, req);
                     }
                     else {
                         console.log("shortUrl routing: not found shortUrl in the model");
@@ -158,16 +148,12 @@ var App = (function () {
             }
             else {
                 _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'emojiLink': redirectUrl } } }, function (err, url) {
-                    // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
                         console.log("emojiLink routing: found emojiLink in the model");
                         // will return a url model with one match url item in an array
                         // so we need to in fact return url.urls[0]
                         console.log(url.urls[0]);
-                        //res.json(url.urls[0]);
                         res.redirect(url.urls[0].longUrl);
-                        // record the stats
-                        //statsService.logRequest(shortUrl, req);
                     }
                     else {
                         console.log("emojiLink routing: not found emojiLink in the model");
@@ -184,7 +170,6 @@ var App = (function () {
         //                                expiration_data: String, 
         //                                isRemoved_data: Boolean) 
         this.express.use('/', router);
-        // this.express.use('/app/json/', express.static(__dirname+'/app/json'));
         this.express.use('/image', express.static(__dirname + '/assets/images'));
         this.express.use('/', express.static(__dirname + '/dist'));
     };
