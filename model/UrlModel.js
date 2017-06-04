@@ -15,6 +15,7 @@ var UrlModel = (function () {
                     urlId: Number,
                     shortUrl: String,
                     longUrl: String,
+                    emojiLink: String,
                     expirationDate: String,
                     isRemoved: Boolean
                 }]
@@ -27,6 +28,12 @@ var UrlModel = (function () {
         var query = this.model.findOne(filter);
         query.exec(function (err, itemArray) {
             response.json(itemArray);
+        });
+    };
+    UrlModel.prototype.retrieveLongUrl = function (response, filter) {
+        var query = this.model.findOne(filter);
+        query.exec(function (err, url) {
+            response.json(url);
         });
     };
     UrlModel.prototype.retrieveUrlsCount = function (response, filter) {

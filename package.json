@@ -4,10 +4,13 @@
   "description": "This directory contains two express servers: * AppServer.js - Combined Node/Express web server w/ Mongo Access * Server.js - Encapsulated Node/Express web server w/ Mongo Access",
   "main": "Server.js",
   "dependencies": {
+    //"angular-chart.js": "^1.0.2",
     "assert": "^1.4.1",
     "body-parser": "^1.17.1",
     "debug": "^2.6.3",
+    "emojilib": "^2.2.1",
     "express": "^4.15.2",
+    //"geoip-lite": "^1.2.1",
     "mongodb": "^2.2.25",
     "morgan": "^1.8.1",
     "path": "^0.12.7",

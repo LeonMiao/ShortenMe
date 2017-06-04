@@ -6,6 +6,7 @@ interface IUrlModel extends Mongoose.Document {
         urlId: number;
         shortUrl: string;
         longUrl: string;
+        emojiLink: string;
         expirationDate: string;
         isRemoved: boolean;
     }];

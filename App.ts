@@ -4,7 +4,7 @@ import * as logger from 'morgan';
 import * as url from 'url';
 import * as bodyParser from 'body-parser';
 import ShortUniqueId from 'short-unique-id';
-
+import emoji from 'emojilib';
 // import ListModel from './model/ListModel';
 // import TaskModel from './model/TaskModel';
 
@@ -13,6 +13,9 @@ import AccountModel from './model/AccountModel';
 import UrlModel from './model/UrlModel';
 
 import DataAccess from './DataAccess';
+
+//import StatsService from './services/StatsService';
+
 
 const uid: ShortUniqueId = new ShortUniqueId();
 
@@ -109,10 +112,31 @@ class App {
 
                     var shortUrl = uid.randomUUID(6);
                     console.log(shortUrl);
+
+                    var emojiUrlLength = 8;
+
+                    var emojiTxtList = emoji.ordered;
+                    var emojiLib = emoji.lib;
+                    var emojiLink = '';
+
+                    var emojiSelected = '';
+
+                    for (var i = 0; i < emojiUrlLength; ++i) {
+                        var emojiIndexSelected = Math.ceil(Math.random() * emojiTxtList.length);
+                        if (emojiLib[emojiTxtList[emojiIndexSelected]].char) {
+                            emojiSelected = emojiLib[emojiTxtList[emojiIndexSelected]].char;
+                        }
+                        emojiLink += emojiSelected;
+                        emojiSelected = '';
+                    }
+
+                    console.log("emojiLink: " + emojiLink);
+
                     var new_url_data = {
                         urlId: this.idGeneratorUrl,
                         shortUrl: shortUrl,
                         longUrl: longUrl,
+                        emojiLink: emojiLink,
                         expirationDate: "6-18-2017",
                         isRemoved: false
                     };
@@ -147,26 +171,51 @@ class App {
 
         router.get('*', function (req, res) {
             // originalUrl = "/XXX" instead of "XXX", which is what we need
-            var shortUrl = req.originalUrl.slice(1);
+            var redirectUrl = req.originalUrl.slice(1);
 
-            this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': shortUrl } } }, function (err, url) {
-                // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
-                if (url.urls[0]) {
-                    console.log("shortUrl routing: found shortUrl in the model");
-                    // will return a url model with one match url item in an array
-                    // so we need to in fact return url.urls[0]
-                    console.log(url.urls[0]);
-                    //res.json(url.urls[0]);
-                    res.redirect(url.urls[0].longUrl);
-                    // record the stats
-                    //statsService.logRequest(shortUrl, req);
+            // prevent the emojiLink from encoding
+            redirectUrl = decodeURI(redirectUrl);
 
-                } else {
-                    console.log("shortUrl routing: not found shortUrl in the model");
-                    res.status(404).send('what??? shortUrl not found.');
-                    //res.sendFile('404.html', { root: path.join(__dirname + '/../public/views') });
-                }
-            });
+            if (redirectUrl.length == 6){
+                this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': redirectUrl } } }, function (err, url) {
+                    // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
+                    if (url.urls[0]) {
+                        console.log("shortUrl routing: found shortUrl in the model");
+                        // will return a url model with one match url item in an array
+                        // so we need to in fact return url.urls[0]
+                        console.log(url.urls[0]);
+                        //res.json(url.urls[0]);
+                        res.redirect(url.urls[0].longUrl);
+                        // record the stats
+                        //statsService.logRequest(shortUrl, req);
+
+                    } else {
+                        console.log("shortUrl routing: not found shortUrl in the model");
+                        res.status(404).send('what??? shortUrl not found.');
+                        //res.sendFile('404.html', { root: path.join(__dirname + '/../public/views') });
+                    }
+                });
+            } else  {
+                this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'emojiLink': redirectUrl } } }, function (err, url) {
+                    // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
+                    if (url.urls[0]) {
+                        console.log("emojiLink routing: found emojiLink in the model");
+                        // will return a url model with one match url item in an array
+                        // so we need to in fact return url.urls[0]
+                        console.log(url.urls[0]);
+                        //res.json(url.urls[0]);
+                        res.redirect(url.urls[0].longUrl);
+                        // record the stats
+                        //statsService.logRequest(shortUrl, req);
+
+                    } else {
+                        console.log("emojiLink routing: not found emojiLink in the model");
+                        res.status(404).send('what??? emojiLink not found.');
+                        //res.sendFile('404.html', { root: path.join(__dirname + '/../public/views') });
+                    }
+                });
+            }
+
         });
 
         // public AddUrlsToList(response:any, filter:Object, 

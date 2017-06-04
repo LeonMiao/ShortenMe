@@ -6,8 +6,8 @@ var mongoose = DataAccess.mongooseInstance;
 var mongooseConnection = DataAccess.mongooseConnection;
 
 export default class UrlModel {
-    public schema:Mongoose.Schema;
-    public model:any;
+    public schema: Mongoose.Schema;
+    public model: any;
 
     public constructor() {
         this.createSchema();
@@ -15,34 +15,42 @@ export default class UrlModel {
     }
 
     public createSchema(): void {
-        this.schema =  mongoose.Schema(
+        this.schema = mongoose.Schema(
             {
                 accountId: Number,
-                urls: [ {
+                urls: [{
                     urlId: Number,
                     shortUrl: String,
                     longUrl: String,
+                    emojiLink: String,
                     expirationDate: String,
                     isRemoved: Boolean
                 }]
-            }, {collection: 'urls'}
+            }, { collection: 'urls' }
         );
     }
 
     public createModel(): void {
         this.model = mongooseConnection.model<IUrlModel>("Url", this.schema);
     }
-    
-    public retrieveUrlsDetails(response:any, filter:Object) {
+
+    public retrieveUrlsDetails(response: any, filter: Object) {
         var query = this.model.findOne(filter);
-        query.exec( (err, itemArray) => {
+        query.exec((err, itemArray) => {
             response.json(itemArray);
         });
     }
 
-    public retrieveUrlsCount(response:any, filter:Object) {
+    public retrieveLongUrl(response: any, filter: Object) {
+        var query = this.model.findOne(filter);
+        query.exec((err, url) => {
+            response.json(url);
+        });
+    }
+
+    public retrieveUrlsCount(response: any, filter: Object) {
         var query = this.model.find(filter).select('urls').count();
-        query.exec( (err, numberOfUrls) => {
+        query.exec((err, numberOfUrls) => {
             console.log('number of urls: ' + numberOfUrls);
             response.json(numberOfUrls);
         });
@@ -55,7 +63,7 @@ export default class UrlModel {
     //                                    expiration_data: String, 
     //                                    isRemoved_data: Boolean) {
 
-    public AddUrlsToList(response:any, filter:Object, newUrlObj: Object) {
+    public AddUrlsToList(response: any, filter: Object, newUrlObj: Object) {
         // var new_url_data = {
         //     urlId: urlId_data,
         //     shortUrl: shortUrl_data,
@@ -64,8 +72,8 @@ export default class UrlModel {
         //     isRemoved: isRemoved_data
         // };
 
-        var query = this.model.findOneAndUpdate(filter, {$push: {urls: newUrlObj}});
-        query.exec( (err, itemArray) => {
+        var query = this.model.findOneAndUpdate(filter, { $push: { urls: newUrlObj } });
+        query.exec((err, itemArray) => {
             //var urlArrayLen = itemArray.urls.length;
             //console.log("urlarraylen: "+ urlArrayLen);
             //response.json(itemArray.urls[urlArrayLen-1]);
