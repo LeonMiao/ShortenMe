@@ -3,17 +3,20 @@ exports.__esModule = true;
 var express = require("express");
 var logger = require("morgan");
 var bodyParser = require("body-parser");
+var session = require("express-session");
 var short_unique_id_1 = require("short-unique-id");
 var emojilib_1 = require("emojilib");
 // models for account and url
 var AccountModel_1 = require("./model/AccountModel");
 var UrlModel_1 = require("./model/UrlModel");
-//import StatsService from './services/StatsService';
+var FacebookPassport_1 = require("./FacebookPassport");
+var passport = require('passport');
 var uid = new short_unique_id_1();
 // Creates and configures an ExpressJS web server.
 var App = (function () {
     //Run configuration methods on the Express instance.
     function App() {
+        this.facebookPassportObj = new FacebookPassport_1["default"]();
         this.express = express();
         this.middleware();
         this.routes();
@@ -27,6 +30,15 @@ var App = (function () {
         this.express.use(logger('dev'));
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
+        this.express.use(session({ secret: 'keyboard cat' }));
+        this.express.use(passport.initialize());
+        this.express.use(passport.session());
+    };
+    App.prototype.validateAuth = function (req, res, next) {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        res.redirect('/');
     };
     // Configure API endpoints.
     App.prototype.routes = function () {
@@ -37,6 +49,12 @@ var App = (function () {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
+        });
+        router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['public_profile', 'email'] }));
+        router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/', successRedirect: '/url' }));
+        router.get('/auth/userdata', _this.validateAuth, function (req, res) {
+            console.log('user object:' + JSON.stringify(req.user));
+            res.json(req.user);
         });
         router.get('/app/account/:accountId/count', function (req, res) {
             var id = req.params.accountId;
@@ -125,13 +143,18 @@ var App = (function () {
                 }
             });
         });
-        router.get('*', function (req, res) {
+        router.get('/redirect/:redirectUrl', function (req, res) {
             // originalUrl = "/XXX" instead of "XXX", which is what we need
-            var redirectUrl = req.originalUrl.slice(1);
+            //var redirectUrl = req.originalUrl.slice(1);
+            var redirectUrl = req.params.redirectUrl;
             // prevent the emojiLink from encoding
             redirectUrl = decodeURI(redirectUrl);
+            // if (redirectUrl.length == 0){
+            //     return;
+            // }
             if (redirectUrl.length == 6) {
                 _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': redirectUrl } } }, function (err, url) {
+                    // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
                         console.log("shortUrl routing: found shortUrl in the model");
                         // will return a url model with one match url item in an array
@@ -148,6 +171,7 @@ var App = (function () {
             }
             else {
                 _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'emojiLink': redirectUrl } } }, function (err, url) {
+                    // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
                         console.log("emojiLink routing: found emojiLink in the model");
                         // will return a url model with one match url item in an array
@@ -170,6 +194,7 @@ var App = (function () {
         //                                expiration_data: String, 
         //                                isRemoved_data: Boolean) 
         this.express.use('/', router);
+        // this.express.use('/app/json/', express.static(__dirname+'/app/json'));
         this.express.use('/image', express.static(__dirname + '/assets/images'));
         this.express.use('/', express.static(__dirname + '/dist'));
     };

@@ -3,6 +3,8 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as url from 'url';
 import * as bodyParser from 'body-parser';
+import * as session from 'express-session';
+
 import ShortUniqueId from 'short-unique-id';
 import emoji from 'emojilib';
 
@@ -11,9 +13,9 @@ import AccountModel from './model/AccountModel';
 import UrlModel from './model/UrlModel';
 
 import DataAccess from './DataAccess';
+import FacebookPassportObj from './FacebookPassport';
 
-//import StatsService from './services/StatsService';
-
+let passport = require('passport');
 
 const uid: ShortUniqueId = new ShortUniqueId();
 
@@ -26,9 +28,11 @@ class App {
     public Urls: UrlModel;
     public idGeneratorAccount: number;
     public idGeneratorUrl: number;
+    public facebookPassportObj: FacebookPassportObj;
 
     //Run configuration methods on the Express instance.
     constructor() {
+        this.facebookPassportObj = new FacebookPassportObj();
         this.express = express();
         this.middleware();
         this.routes();
@@ -43,6 +47,14 @@ class App {
         this.express.use(logger('dev'));
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
+        this.express.use(session({ secret: 'keyboard cat' }));
+        this.express.use(passport.initialize());
+        this.express.use(passport.session());
+    }
+
+    private validateAuth(req, res, next): void {
+        if (req.isAuthenticated()) { return next(); }
+        res.redirect('/');
     }
 
     // Configure API endpoints.
@@ -54,6 +66,23 @@ class App {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
+        });
+
+        router.get('/auth/facebook',
+            passport.authenticate('facebook',
+                { scope: ['public_profile', 'email'] }
+            )
+        );
+
+        router.get('/auth/facebook/callback',
+            passport.authenticate('facebook',
+                { failureRedirect: '/', successRedirect: '/url' }
+            )
+        );
+
+        router.get('/auth/userdata', this.validateAuth, (req, res) => {
+            console.log('user object:' + JSON.stringify(req.user));
+            res.json(req.user);
         });
 
         router.get('/app/account/:accountId/count', (req, res) => {
@@ -160,14 +189,20 @@ class App {
         });
 
 
-        router.get('*', function (req, res) {
+        router.get('/redirect/:redirectUrl', function (req, res) {
             // originalUrl = "/XXX" instead of "XXX", which is what we need
-            var redirectUrl = req.originalUrl.slice(1);
+            //var redirectUrl = req.originalUrl.slice(1);
+
+            var redirectUrl = req.params.redirectUrl;
 
             // prevent the emojiLink from encoding
             redirectUrl = decodeURI(redirectUrl);
 
-            if (redirectUrl.length == 6){
+            // if (redirectUrl.length == 0){
+            //     return;
+            // }
+
+            if (redirectUrl.length == 6) {
                 this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': redirectUrl } } }, function (err, url) {
                     // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
@@ -183,7 +218,7 @@ class App {
                         //res.sendFile('404.html', { root: path.join(__dirname + '/../public/views') });
                     }
                 });
-            } else  {
+            } else {
                 this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'emojiLink': redirectUrl } } }, function (err, url) {
                     // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
@@ -192,7 +227,7 @@ class App {
                         // so we need to in fact return url.urls[0]
                         console.log(url.urls[0]);
                         res.redirect(url.urls[0].longUrl);
-                       
+
                     } else {
                         console.log("emojiLink routing: not found emojiLink in the model");
                         res.status(404).send('what??? emojiLink not found.');
