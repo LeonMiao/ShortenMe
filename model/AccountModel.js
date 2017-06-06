@@ -10,7 +10,7 @@ var AccountModel = (function () {
     }
     AccountModel.prototype.createSchema = function () {
         this.schema = mongoose.Schema({
-            accountId: Number,
+            accountId: String,
             userName: String,
             fName: String,
             mName: String,
@@ -28,6 +28,16 @@ var AccountModel = (function () {
         var query = this.model.find({});
         query.exec(function (err, itemArray) {
             response.json(itemArray);
+        });
+    };
+    AccountModel.prototype.retrieveTheAccount = function (response, filter) {
+        var query = this.model.findOne(filter);
+        query.exec(function (err, accountObj) {
+            console.log("retrieve the Account:");
+            var accountObjArray = [];
+            accountObjArray.push(accountObj);
+            console.log(accountObjArray);
+            response.json(accountObjArray);
         });
     };
     return AccountModel;

@@ -17,7 +17,7 @@ export default class UrlModel {
     public createSchema(): void {
         this.schema = mongoose.Schema(
             {
-                accountId: Number,
+                accountId: String,
                 urls: [{
                     urlId: Number,
                     shortUrl: String,

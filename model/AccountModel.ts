@@ -17,7 +17,7 @@ export default class AccountModel {
     public createSchema(): void {
         this.schema =  mongoose.Schema(
             {
-                accountId: Number,
+                accountId: String,
                 userName: String,
                 fName: String,
                 mName: String,
@@ -40,4 +40,12 @@ export default class AccountModel {
             response.json(itemArray) ;
         });
     }
+
+    public retrieveTheAccount(response: any, filter: Object) {
+        var query = this.model.findOne(filter);
+        query.exec((err, itemArray) => {
+            response.json(itemArray);
+        });
+    }
+
 }

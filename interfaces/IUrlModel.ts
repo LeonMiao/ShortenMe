@@ -1,7 +1,7 @@
 import Mongoose = require("mongoose");
 
 interface IUrlModel extends Mongoose.Document {
-    accountId: number;
+    accountId: string;
     urls: [ {
         urlId: number;
         shortUrl: string;

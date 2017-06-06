@@ -85,6 +85,7 @@ class App {
             res.json(req.user);
         });
 
+        // not really used
         router.get('/app/account/:accountId/count', (req, res) => {
             var id = req.params.accountId;
             console.log('Query single account with id: ' + id);
@@ -244,11 +245,17 @@ class App {
         //                                expiration_data: String, 
         //                                isRemoved_data: Boolean) 
 
-        this.express.use('/', router);
 
         // this.express.use('/app/json/', express.static(__dirname+'/app/json'));
+
+        router.get('*', (req, res) => {
+            res.sendFile(__dirname + '/dist/index.html');
+        });
+
         this.express.use('/image', express.static(__dirname + '/assets/images'));
         this.express.use('/', express.static(__dirname + '/dist'));
+        this.express.use('/', router);
+
     }
 }
 

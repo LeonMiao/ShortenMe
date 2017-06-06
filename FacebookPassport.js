@@ -12,7 +12,7 @@ var FacebookPassport = (function () {
         passport.use(new FacebookStrategy({
             clientID: this.clientId,
             clientSecret: this.secretId,
-            callbackURL: "http://http://localhost:4200//auth/facebook/callback",
+            callbackURL: "http://localhost:8080/auth/facebook/callback",
             profileFields: ['id', 'displayName', 'emails']
         }, function (accessToken, refreshToken, profile, done) {
             process.nextTick(function () {

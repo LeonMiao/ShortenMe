@@ -13,7 +13,7 @@ var FacebookPassport_1 = require("./FacebookPassport");
 var passport = require('passport');
 var uid = new short_unique_id_1();
 // Creates and configures an ExpressJS web server.
-var App = (function () {
+var App = (function() {
     //Run configuration methods on the Express instance.
     function App() {
         this.facebookPassportObj = new FacebookPassport_1["default"]();
@@ -26,7 +26,7 @@ var App = (function () {
         this.Urls = new UrlModel_1["default"]();
     }
     // Configure Express middleware.
-    App.prototype.middleware = function () {
+    App.prototype.middleware = function() {
         this.express.use(logger('dev'));
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
@@ -34,38 +34,39 @@ var App = (function () {
         this.express.use(passport.initialize());
         this.express.use(passport.session());
     };
-    App.prototype.validateAuth = function (req, res, next) {
+    App.prototype.validateAuth = function(req, res, next) {
         if (req.isAuthenticated()) {
             return next();
         }
         res.redirect('/');
     };
     // Configure API endpoints.
-    App.prototype.routes = function () {
+    App.prototype.routes = function() {
         var _this = this;
         var router = express.Router();
         // don't forget to add this when using 4200 ng server
-        router.use(function (req, res, next) {
+        router.use(function(req, res, next) {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
         });
         router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['public_profile', 'email'] }));
         router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/', successRedirect: '/url' }));
-        router.get('/auth/userdata', _this.validateAuth, function (req, res) {
+        router.get('/auth/userdata', _this.validateAuth, function(req, res) {
             console.log('user object:' + JSON.stringify(req.user));
             res.json(req.user);
         });
-        router.get('/app/account/:accountId/count', function (req, res) {
+        router.get('/app/account/:accountId/count', function(req, res) {
             var id = req.params.accountId;
             console.log('Query single account with id: ' + id);
             _this.Urls.retrieveUrlsCount(res, { accountId: id });
         });
-        router.post('/app/account/', function (req, res) {
+        // not really used
+        router.post('/app/account/', function(req, res) {
             console.log(req.body);
             var jsonObj = req.body;
             jsonObj.accountId = _this.idGeneratorAccount;
-            _this.Accounts.model.create([jsonObj], function (err) {
+            _this.Accounts.model.create([jsonObj], function(err) {
                 if (err) {
                     console.log('object creation failed');
                 }
@@ -73,21 +74,29 @@ var App = (function () {
             res.send(_this.idGeneratorAccount.toString());
             _this.idGeneratorAccount++;
         });
-        router.get('/app/account/:accountId', function (req, res) {
+
+        // done
+        router.get('/app/account/url/:accountId', function(req, res) {
             var id = req.params.accountId;
             console.log('Query single account with id: ' + id);
             _this.Urls.retrieveUrlsDetails(res, { accountId: id });
         });
-        router.get('/app/account/', function (req, res) {
-            console.log('Query All account');
-            _this.Accounts.retrieveAllAccounts(res);
+
+        // done
+        router.get('/app/account/:accountId', function(req, res) {
+            var id = req.params.accountId;
+            console.log('Query the account');
+            _this.Accounts.retrieveTheAccount(res, { accountId: id });
         });
-        router.post('/app/url', function (req, res) {
+
+        //
+        router.post('/app/url', function(req, res) {
             var longUrl = req.body.longUrl;
+            var accountId = req.body.accountId;
             if (longUrl.indexOf('http') === -1) {
                 longUrl = "http://" + longUrl;
             }
-            _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'longUrl': longUrl } } }, function (err, url) {
+            _this.Urls.model.findOne({ accountId: accountId }, { urls: { $elemMatch: { 'longUrl': longUrl } } }, function(err, url) {
                 if (url.urls[0]) {
                     console.log("found longUrl in the model");
                     // will return a url model with one match url item in an array
@@ -121,15 +130,17 @@ var App = (function () {
                         expirationDate: "6-18-2017",
                         isRemoved: false
                     };
-                    _this.Urls.AddUrlsToList(res, { accountId: 1 }, new_url_data);
+                    _this.Urls.AddUrlsToList(res, { accountId: accountId }, new_url_data);
                     _this.idGeneratorUrl++;
                 }
             });
         });
-        router.get('/app/url/:shortUrl', function (req, res) {
+        router.get('/app/url/:accountId/:shortUrl', function(req, res) {
             // use .params in Express
             var shortUrl = req.params.shortUrl;
-            _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': shortUrl } } }, function (err, url) {
+            var accountId = req.params.accountId;
+
+            _this.Urls.model.findOne({ accountId: accountId }, { urls: { $elemMatch: { 'shortUrl': shortUrl } } }, function(err, url) {
                 if (url.urls[0]) {
                     console.log("found shortUrl in the model");
                     // will return a url model with one match url item in an array
@@ -143,7 +154,7 @@ var App = (function () {
                 }
             });
         });
-        router.get('/redirect/:redirectUrl', function (req, res) {
+        router.get('/redirect/:redirectUrl', function(req, res) {
             // originalUrl = "/XXX" instead of "XXX", which is what we need
             //var redirectUrl = req.originalUrl.slice(1);
             var redirectUrl = req.params.redirectUrl;
@@ -153,7 +164,7 @@ var App = (function () {
             //     return;
             // }
             if (redirectUrl.length == 6) {
-                _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': redirectUrl } } }, function (err, url) {
+                _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': redirectUrl } } }, function(err, url) {
                     // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
                         console.log("shortUrl routing: found shortUrl in the model");
@@ -170,7 +181,7 @@ var App = (function () {
                 });
             }
             else {
-                _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'emojiLink': redirectUrl } } }, function (err, url) {
+                _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'emojiLink': redirectUrl } } }, function(err, url) {
                     // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
                         console.log("emojiLink routing: found emojiLink in the model");
@@ -193,10 +204,13 @@ var App = (function () {
         //                                longUrl_data: String, 
         //                                expiration_data: String, 
         //                                isRemoved_data: Boolean) 
-        this.express.use('/', router);
-        // this.express.use('/app/json/', express.static(__dirname+'/app/json'));
+        this.express.use('/app/json/', express.static(__dirname + '/app/json'));
+        router.get('*', function(req, res) {
+            res.sendFile(__dirname + '/dist/index.html');
+        });
         this.express.use('/image', express.static(__dirname + '/assets/images'));
         this.express.use('/', express.static(__dirname + '/dist'));
+        this.express.use('/', router);
     };
     return App;
 }());

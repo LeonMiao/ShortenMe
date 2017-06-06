@@ -207,22 +207,22 @@ var UrlShortenerService = (function () {
             .map(function (response) { return response.json(); });
     };
     //=======================
-    UrlShortenerService.prototype.getAllAccounts = function () {
-        return this.http.get(this.host + '/app/account/')
-            .map(function (response) { return response.json(); });
-    };
-    UrlShortenerService.prototype.getUrlsForAccount = function (pId) {
+    UrlShortenerService.prototype.getTheAccount = function (pId) {
         return this.http.get(this.host + '/app/account/' + pId)
             .map(function (response) { return response.json(); });
     };
-    UrlShortenerService.prototype.convertAndStore = function (inputLongUrl) {
-        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
-        var options = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* RequestOptions */]({ headers: headers });
-        return this.http.post(this.host + '/app/url/', { longUrl: inputLongUrl })
+    UrlShortenerService.prototype.getUrlsForAccount = function (pId) {
+        return this.http.get(this.host + '/app/account/url/' + pId)
             .map(function (response) { return response.json(); });
     };
-    UrlShortenerService.prototype.findByShortUrl = function (inputShortUrl) {
-        return this.http.get(this.host + '/app/url/' + inputShortUrl)
+    UrlShortenerService.prototype.convertAndStore = function (inputLongUrl, inputAccountId) {
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* RequestOptions */]({ headers: headers });
+        return this.http.post(this.host + '/app/url/', { longUrl: inputLongUrl, accountId: inputAccountId })
+            .map(function (response) { return response.json(); });
+    };
+    UrlShortenerService.prototype.findByShortUrl = function (inputShortUrl, inputAccountId) {
+        return this.http.get(this.host + '/app/url/' + inputAccountId + '/' + inputShortUrl)
             .map(function (response) { return response.json(); });
     };
     return UrlShortenerService;
@@ -330,14 +330,14 @@ module.exports = module.exports.toString();
 /***/ 165:
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\n  <div class=\"container-fluid\">\n    <div class=\"navbar-header\">\n      <div class=\"navbar-brand\" style=\"padding-top: 15px;\">\n        <a class=\"img-responsive2\" [routerLink] = \"['']\"><img src=\"../assets/images/letter-s-between-straight-parenthesis-symbol.png\" style=\"margin-top: -4px;\"></a>\n        <a class=\"text-warning\" [routerLink] = \"['']\" style=\"text-decoration:none\">ShortenMe</a>\n      </div>\n    </div>\n    <div id=\"navbar\" class=\"navbar-collapse collapse\">\n      <ul class=\"nav navbar-nav\">\n        <!--<li><a href=\"#\">Convert</a></li>-->\n        <li><a [routerLink] = \"['']\">Convert</a></li>\n\n      </ul>\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li class=\"dropdown\">\n          <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">Account<span class=\"caret\"></span></a>\n          <ul class=\"dropdown-menu\" role=\"menu\">\n            <li><a [routerLink] = \"['/list/']\">Profile</a></li>\n            <!--<li><a href=\"javascript:initXHR('urlList', null)\">URLs</a></li>-->\n            <li><a href=\"#\">URLs</a></li>\n            <!--<li><a href=\"#\">Disabled</a></li>-->\n          </ul>\n        </li>\n        <li><a [routerLink] = \"['/login/']\">Login</a></li>\n      </ul>\n    </div>\n    <!--/.nav-collapse -->\n  </div>\n  <!--/.container-fluid -->\n</nav>\n\n<router-outlet></router-outlet>"
+module.exports = "<nav class=\"navbar navbar-default\">\n  <div class=\"container-fluid\">\n    <div class=\"navbar-header\">\n      <div class=\"navbar-brand\" style=\"padding-top: 15px;\">\n        <a class=\"img-responsive2\" [routerLink] = \"['']\"><img src=\"../assets/images/letter-s-between-straight-parenthesis-symbol.png\" style=\"margin-top: -4px;\"></a>\n        <a class=\"text-warning\" [routerLink] = \"['']\" style=\"text-decoration:none\">ShortenMe</a>\n      </div>\n    </div>\n    <div id=\"navbar\" class=\"navbar-collapse collapse\">\n      <ul class=\"nav navbar-nav\">\n        <!--<li><a href=\"#\">Convert</a></li>-->\n        <li><a [routerLink] = \"['url']\">Convert</a></li>\n\n      </ul>\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li class=\"dropdown\">\n          <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">Account<span class=\"caret\"></span></a>\n          <ul class=\"dropdown-menu\" role=\"menu\">\n            <li><a [routerLink] = \"['/list/']\">Profile</a></li>\n            <!--<li><a href=\"javascript:initXHR('urlList', null)\">URLs</a></li>-->\n            <li><a href=\"#\">URLs</a></li>\n            <!--<li><a href=\"#\">Disabled</a></li>-->\n          </ul>\n        </li>\n        <li><a [routerLink] = \"['']\">Login</a></li>\n      </ul>\n    </div>\n    <!--/.nav-collapse -->\n  </div>\n  <!--/.container-fluid -->\n</nav>\n\n<router-outlet></router-outlet>"
 
 /***/ }),
 
 /***/ 166:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n  <h4>Input your loooooooooong URL</h4>\n\n\n  <form (ngSubmit)=\"onSubmit()\">\n\n    <div class=\"form-group\">\n      <input type=\"text\" class=\"form-control\" placeholder=\"Input goes here...\" [(ngModel)]=\"inputLongUrl\" name=\"inputLongUrl\">\n    </div>\n\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Get Your Short URL\" />\n    <!--<input class=\"btn btn-primary\" type=\"button\" value=\"Get Your Short URL\" (click)=\"onClick()\"/>-->\n\n    <!--<button (click)=\"onClick()\" class=\"btn btn-primary\" type=\"button\">Get Another!</button>-->\n\n    <!--</span>-->\n  </form>\n\n</div>\n<!--\n<div class=\"container\" ng-show=\"!convert\">\n  <div class=\"input-group\">\n    <input type=\"text\" class=\"form-control\" value=\"www.shortenme.com/rn5f\">\n    <span class=\"input-group-btn\">\n      <button (click)=\"onCopyClick()\" class=\"btn btn-secondary\" type=\"button\">Copy</button>\n    </span>\n    <span class=\"input-group-btn\">\n      <button (click)=\"onClick()\" class=\"btn btn-primary\" type=\"button\">Get Another!</button>\n    </span>\n  </div>\n</div>\n</div>-->"
+module.exports = "<div class=\"container\">\n  <h4>User Name: {{username}}</h4>\n  <h4>Email: {{email}}</h4>\n\n  <br>\n  \n  <h4>Input your loooooooooong URL</h4>\n\n  <form (ngSubmit)=\"onSubmit()\">\n\n    <div class=\"form-group\">\n      <input type=\"text\" class=\"form-control\" placeholder=\"Input goes here...\" [(ngModel)]=\"inputLongUrl\" name=\"inputLongUrl\">\n    </div>\n\n    <input class=\"btn btn-primary\" type=\"submit\" value=\"Get Your Short URL\" />\n    <!--<input class=\"btn btn-primary\" type=\"button\" value=\"Get Your Short URL\" (click)=\"onClick()\"/>-->\n\n    <!--<button (click)=\"onClick()\" class=\"btn btn-primary\" type=\"button\">Get Another!</button>-->\n\n    <!--</span>-->\n  </form>\n\n</div>\n<!--\n<div class=\"container\" ng-show=\"!convert\">\n  <div class=\"input-group\">\n    <input type=\"text\" class=\"form-control\" value=\"www.shortenme.com/rn5f\">\n    <span class=\"input-group-btn\">\n      <button (click)=\"onCopyClick()\" class=\"btn btn-secondary\" type=\"button\">Copy</button>\n    </span>\n    <span class=\"input-group-btn\">\n      <button (click)=\"onClick()\" class=\"btn btn-primary\" type=\"button\">Get Another!</button>\n    </span>\n  </div>\n</div>\n</div>-->"
 
 /***/ }),
 
@@ -372,7 +372,7 @@ module.exports = "<h4 class=\"panel-heading\" style=\"background-color:lightgrey
 /***/ 171:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\" >\n\t<div class=\"panel panel-default\" style=\"border-width: 0px; border-style:solid\">\n\t\t<div class=\"panel-default\">\n\t\t\t<h3>Active Accounts</h3>\n\t\t</div>\n\t\t<br>\n\t\t<div>\n\t\t\t<div class=\"panel panel-heading\" style=\"border-width: 1px; border-style:solid; border-color:gray;\" *ngFor=\"let result of accountList; let i = index\">\n\t\t\t\t<!-- Default panel contents -->\n\n\t\t\t\t<lists-table [account]=\"result\" [index]=\"i\"></lists-table>\n\t\t\t\t<!-- Table -->\n\t\t\t</div>\n\n\t\t</div>\n\t</div>\n</div>\n\n"
+module.exports = "<div class=\"container\">\n\t<div class=\"panel panel-default\" style=\"border-width: 0px; border-style:solid\">\n\t\t<div class=\"panel-default\">\n\t\t\t<!--<h3>Active Accounts</h3>-->\n\t\t\t<h3>Profile</h3>\n\t\t</div>\n\t\t<br>\n\t\t<div>\n\t\t\t<div class=\"panel panel-heading\" style=\"border-width: 1px; border-style:solid; border-color:gray;\" *ngFor=\"let result of accountList; let i = index\">\n\t\t\t\t<!-- Default panel contents -->\n\n\t\t\t\t<lists-table [account]=\"result\" [index]=\"i\"></lists-table>\n\t\t\t\t<!-- Table -->\n\t\t\t</div>\n\n\t\t</div>\n\t</div>\n</div>"
 
 /***/ }),
 
@@ -413,15 +413,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var ConvertComponent = (function () {
     function ConvertComponent(_router, _urlShortener) {
+        var _this = this;
         this.router$ = _router;
         this.urlShortener$ = _urlShortener;
+        this.urlShortener$.getUserInfo()
+            .subscribe(function (result) {
+            _this.username = result.displayName;
+            _this.email = result.emails[0].value;
+            console.log("result: " + result);
+        }, function () { _this.username = "not logged in"; }, function () { return console.log('REST call: ' + _this.username); });
     }
     ConvertComponent.prototype.ngOnInit = function () {
     };
     ConvertComponent.prototype.onSubmit = function () {
         var _this = this;
         console.log(this.inputLongUrl);
-        this.urlShortener$.convertAndStore(this.inputLongUrl)
+        this.urlShortener$.convertAndStore(this.inputLongUrl, this.email)
             .subscribe(function (result) {
             _this.newUrl = result;
             console.log("result for newUrl:");
@@ -470,27 +477,51 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var ConvertedComponent = (function () {
     function ConvertedComponent(_router, _urlShortener) {
+        var _this = this;
         this.router$ = _router;
         this.urlShortener$ = _urlShortener;
         console.log("current url: " + this.router$.url.split('/').pop());
         this.inputShortUrl = this.router$.url.split('/').pop();
+        this.urlShortener$.getUserInfo()
+            .subscribe(function (result) {
+            _this.username = result.displayName;
+            _this.email = result.emails[0].value;
+            _this.accountId = result.emails[0].value;
+            console.log("getUserInfo result: " + result);
+            _this.urlShortener$.findByShortUrl(_this.inputShortUrl, _this.accountId)
+                .subscribe(function (result) {
+                _this.convertedUrl = result;
+                console.log("result for convertedUrl:");
+                console.log(result);
+                _this.outputLongUrl = result.longUrl;
+                _this.outputShortUrl = result.shortUrl;
+                console.log("outputShortUrl length: " + _this.outputShortUrl.length);
+                _this.outPutShortUrlToShow = 'http://localhost:8080/redirect/' + _this.outputShortUrl;
+                _this.outputEmoji = result.emojiLink;
+                console.log("emojiLink length: " + _this.outputEmoji.length);
+                _this.outPutEmojiToShow = 'http://localhost:8080/redirect/' + _this.outputEmoji;
+            }, function () { return console.log('Error calling REST'); }, function () { return console.log('REST call:' + _this.convertedUrl); });
+        }, function () { _this.username = "not logged in"; }, function () { return console.log('REST call: ' + _this.username); });
     }
     ConvertedComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        console.log("ngOnInit - converted: " + this.inputShortUrl);
-        this.urlShortener$.findByShortUrl(this.inputShortUrl)
-            .subscribe(function (result) {
-            _this.convertedUrl = result;
-            console.log("result for convertedUrl:");
-            console.log(result);
-            _this.outputLongUrl = result.longUrl;
-            _this.outputShortUrl = result.shortUrl;
-            console.log("outputShortUrl length: " + _this.outputShortUrl.length);
-            _this.outPutShortUrlToShow = 'http://localhost:8080/redirect/' + _this.outputShortUrl;
-            _this.outputEmoji = result.emojiLink;
-            console.log("emojiLink length: " + _this.outputEmoji.length);
-            _this.outPutEmojiToShow = 'http://localhost:8080/redirect/' + _this.outputEmoji;
-        }, function () { return console.log('Error calling REST'); }, function () { return console.log('REST call:' + _this.convertedUrl); });
+        // console.log("ngOnInit - converted: " + this.inputShortUrl);
+        // this.urlShortener$.findByShortUrl(this.inputShortUrl, this.accountId)
+        //   .subscribe(
+        //   result => {
+        //     this.convertedUrl = result;
+        //     console.log("result for convertedUrl:");
+        //     console.log(result);
+        //     this.outputLongUrl = result.longUrl;
+        //     this.outputShortUrl = result.shortUrl;
+        //     console.log("outputShortUrl length: " + this.outputShortUrl.length);
+        //     this.outPutShortUrlToShow = 'http://localhost:8080/redirect/' + this.outputShortUrl;
+        //     this.outputEmoji = result.emojiLink;
+        //     console.log("emojiLink length: " + this.outputEmoji.length);
+        //     this.outPutEmojiToShow = 'http://localhost:8080/redirect/' + this.outputEmoji;
+        //   },
+        //   () => console.log('Error calling REST'),
+        //   () => console.log('REST call:' + this.convertedUrl)
+        //   );
     };
     ConvertedComponent.prototype.onClick = function () {
         this.router$.navigate(['/url']);
@@ -545,13 +576,20 @@ var ListComponent = (function () {
         this.route = route;
         this.location = location;
         this.urlShortener$ = urlShortener$;
-        this.accountId = route.snapshot.params['id'];
-        urlShortener$.getUrlsForAccount(this.accountId)
+        //this.accountId = route.snapshot.params['id'];
+        urlShortener$.getUserInfo()
             .subscribe(function (result) {
-            console.log(result);
-            _this.urlList = result.urls;
-            //this.name = "Post";
-        }, function () { }, function () { });
+            _this.username = result.displayName;
+            _this.email = result.emails[0].value;
+            _this.accountId = result.emails[0].value;
+            console.log("getUserInfo result: " + result);
+            urlShortener$.getUrlsForAccount(_this.accountId)
+                .subscribe(function (result) {
+                console.log("getUrlsForAccount result: " + result);
+                _this.urlList = result.urls;
+                //this.name = "Post";
+            }, function () { }, function () { });
+        }, function () { _this.username = "not logged in"; }, function () { return console.log('REST call: ' + _this.username); });
     }
     ListComponent.prototype.ngOnInit = function () { };
     return ListComponent;
@@ -612,11 +650,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ListsComponent = (function () {
     function ListsComponent(urlShortener$) {
         var _this = this;
-        urlShortener$.getAllAccounts()
+        urlShortener$.getUserInfo()
             .subscribe(function (result) {
-            _this.accountList = result;
-            console.log('result:' + _this.accountList.toString());
-        }, function () { return console.log('Error calling REST'); }, function () { return console.log('REST call:' + _this.accountList); });
+            _this.username = result.displayName;
+            _this.email = result.emails[0].value;
+            _this.accountId = result.emails[0].value;
+            console.log("getUserInfo result: " + result);
+            urlShortener$.getTheAccount(_this.accountId)
+                .subscribe(function (result) {
+                _this.accountList = result;
+                console.log('result:' + _this.accountList.toString());
+            }, function () { return console.log('Error calling REST'); }, function () { return console.log('REST call:' + _this.accountList); });
+        }, function () { _this.username = "not logged in"; }, function () { return console.log('REST call: ' + _this.username); });
     }
     ListsComponent.prototype.ngOnInit = function () {
     };
@@ -664,8 +709,9 @@ var LoginComponent = (function () {
         this.urlShortener$.getUserInfo()
             .subscribe(function (result) {
             _this.username = result.displayName;
-            _this.password = result.emails[0].value;
-        }, function () { _this.username = "not logged in"; }, function () { return console.log('REST call' + _this.username); });
+            _this.email = result.emails[0].value;
+            console.log("result: " + result);
+        }, function () { _this.username = "not logged in"; }, function () { return console.log('REST call: ' + _this.username); });
     }
     LoginComponent.prototype.ngOnInit = function () {
     };

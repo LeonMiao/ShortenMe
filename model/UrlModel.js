@@ -10,7 +10,7 @@ var UrlModel = (function () {
     }
     UrlModel.prototype.createSchema = function () {
         this.schema = mongoose.Schema({
-            accountId: Number,
+            accountId: String,
             urls: [{
                     urlId: Number,
                     shortUrl: String,
