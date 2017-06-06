@@ -154,17 +154,19 @@ var App = (function() {
                 }
             });
         });
-        router.get('/redirect/:redirectUrl', function(req, res) {
+        router.get('/:accountId/:redirectUrl', function(req, res) {
             // originalUrl = "/XXX" instead of "XXX", which is what we need
             //var redirectUrl = req.originalUrl.slice(1);
             var redirectUrl = req.params.redirectUrl;
+            var accountId = req.params.accountId;
+
             // prevent the emojiLink from encoding
             redirectUrl = decodeURI(redirectUrl);
             // if (redirectUrl.length == 0){
             //     return;
             // }
             if (redirectUrl.length == 6) {
-                _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'shortUrl': redirectUrl } } }, function(err, url) {
+                _this.Urls.model.findOne({ accountId: accountId }, { urls: { $elemMatch: { 'shortUrl': redirectUrl } } }, function(err, url) {
                     // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
                         console.log("shortUrl routing: found shortUrl in the model");
@@ -181,7 +183,7 @@ var App = (function() {
                 });
             }
             else {
-                _this.Urls.model.findOne({ accountId: 1 }, { urls: { $elemMatch: { 'emojiLink': redirectUrl } } }, function(err, url) {
+                _this.Urls.model.findOne({ accountId: accountId }, { urls: { $elemMatch: { 'emojiLink': redirectUrl } } }, function(err, url) {
                     // this.Urls.model.findOne({ longUrl: longUrl }, function (err, url) {
                     if (url.urls[0]) {
                         console.log("emojiLink routing: found emojiLink in the model");

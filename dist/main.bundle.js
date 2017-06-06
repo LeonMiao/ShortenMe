@@ -496,10 +496,10 @@ var ConvertedComponent = (function () {
                 _this.outputLongUrl = result.longUrl;
                 _this.outputShortUrl = result.shortUrl;
                 console.log("outputShortUrl length: " + _this.outputShortUrl.length);
-                _this.outPutShortUrlToShow = 'http://localhost:8080/redirect/' + _this.outputShortUrl;
+                _this.outPutShortUrlToShow = 'http://localhost:8080/' + _this.accountId + '/' + _this.outputShortUrl;
                 _this.outputEmoji = result.emojiLink;
                 console.log("emojiLink length: " + _this.outputEmoji.length);
-                _this.outPutEmojiToShow = 'http://localhost:8080/redirect/' + _this.outputEmoji;
+                _this.outPutEmojiToShow = 'http://localhost:8080/' + _this.accountId + '/' + _this.outputEmoji;
             }, function () { return console.log('Error calling REST'); }, function () { return console.log('REST call:' + _this.convertedUrl); });
         }, function () { _this.username = "not logged in"; }, function () { return console.log('REST call: ' + _this.username); });
     }
