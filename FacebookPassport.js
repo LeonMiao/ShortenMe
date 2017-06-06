@@ -12,7 +12,7 @@ var FacebookPassport = (function () {
         passport.use(new FacebookStrategy({
             clientID: this.clientId,
             clientSecret: this.secretId,
-            callbackURL: "http://localhost:8080/auth/facebook/callback",
+            callbackURL: "http://shortenme.azurewebsites.net/auth/facebook/callback",
             profileFields: ['id', 'displayName', 'emails']
         }, function (accessToken, refreshToken, profile, done) {
             process.nextTick(function () {
